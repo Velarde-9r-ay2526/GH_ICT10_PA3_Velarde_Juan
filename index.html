@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Working with dictionaries</title>
+
+
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+
+   <link rel="stylesheet" href="https://pyscript.net/releases/2026.7.3/core.css" />
+   <script type="module" src="https://pyscript.net/releases/2026.7.3/core.js"></script>
+
+
+   <style>
+       :root {
+           --bg: #191a1c;
+           --nav: #232527;
+           --card: #232527;
+           --card-hover: #2d2f32;
+           --line: #393b3d;
+           --ink: #ffffff;
+           --muted: #bdbebe;
+           --dim: #8f9193;
+           --blue: #335fff;
+           --blue-hover: #4d74ff;
+           --green: #00b06f;
+           --green-hover: #00c77f;
+           --gold: #ffc43d;
+           --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+       }
+
+
+       * { box-sizing: border-box; }
+       html, body { margin: 0; min-height: 100%; }
+
+
+       body {
+           font-family: var(--font);
+           background: var(--bg);
+           color: var(--ink);
+           -webkit-font-smoothing: antialiased;
+       }
+
+
+       a { color: inherit; text-decoration: none; }
+
+
+       /* ---------- Top navigation ---------- */
+       .topbar {
+           position: sticky;
+           top: 0;
+           z-index: 20;
+           height: 56px;
+           display: flex;
+           align-items: center;
+           gap: 1.25rem;
+           padding: 0 1.1rem;
+           background: var(--nav);
+           border-bottom: 1px solid #000;
+       }
+
+
+       .brand {
+           display: flex;
+           align-items: center;
+           gap: 0.55rem;
+           font-weight: 900;
+           font-size: 1.2rem;
+           letter-spacing: -0.01em;
+       }
+
+
+       .brand-mark {
+           width: 28px;
+           height: 28px;
+           border-radius: 7px;
+           background: linear-gradient(135deg, #5b82ff, var(--blue));
+           display: grid;
+           place-items: center;
+           font-size: 0.8rem;
+           font-weight: 900;
+           transform: rotate(-8deg);
+           box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+       }
+
+
+       .nav-links { display: flex; gap: 0.2rem; }
+       .nav-links a {
+           padding: 0.4rem 0.75rem;
+           border-radius: 6px;
+           font-weight: 700;
+           font-size: 0.95rem;
+           color: var(--muted);
+       }
+       .nav-links a:hover { background: var(--card-hover); color: var(--ink); }
+       .nav-links a.active { color: var(--ink); }
+
+
+       .nav-search {
+           flex: 1;
+           max-width: 22rem;
+           display: flex;
+           align-items: center;
+           gap: 0.5rem;
+           background: #393b3d;
+           border-radius: 8px;
+           padding: 0.45rem 0.8rem;
+           color: var(--dim);
+           font-size: 0.9rem;
+       }
+
+
+       .nav-right {
+           margin-left: auto;
+           display: flex;
+           align-items: center;
+           gap: 0.9rem;
+       }
+
+
+       .coins {
+           display: flex;
+           align-items: center;
+           gap: 0.4rem;
+           font-weight: 800;
+           font-size: 0.92rem;
+       }
+
+
+       .coin {
+           width: 18px;
+           height: 18px;
+           border-radius: 5px;
+           background: var(--green);
+           display: inline-block;
+           transform: rotate(45deg) scale(0.8);
+       }
+
+
+       .avatar {
+           width: 34px;
+           height: 34px;
+           border-radius: 50%;
+           background: linear-gradient(160deg, #ffd479, #f08f3c);
+           border: 2px solid #393b3d;
+           display: grid;
+           place-items: center;
+           font-size: 1.1rem;
+       }
+
+
+       /* ---------- Shell ---------- */
+       .shell { display: flex; min-height: calc(100vh - 56px); }
+
+
+       .sidebar {
+           width: 240px;
+           flex-shrink: 0;
+           background: var(--nav);
+           border-right: 1px solid #000;
+           padding: 1rem 0.6rem;
+           position: sticky;
+           top: 56px;
+           height: calc(100vh - 56px);
+           overflow: auto;
+       }
+
+
+       .side-user {
+           display: flex;
+           align-items: center;
+           gap: 0.7rem;
+           padding: 0.5rem 0.7rem 1rem;
+           font-weight: 800;
+       }
+
+
+       .side-item {
+           display: flex;
+           align-items: center;
+           gap: 0.8rem;
+           padding: 0.62rem 0.75rem;
+           border-radius: 8px;
+           font-weight: 700;
+           font-size: 0.95rem;
+           color: var(--muted);
+       }
+       .side-item .ico { width: 22px; text-align: center; }
+       .side-item:hover { background: var(--card-hover); color: var(--ink); }
+       .side-item.active { background: #393b3d; color: var(--ink); }
+
+
+       .side-divider { height: 1px; background: var(--line); margin: 0.8rem 0.5rem; }
+
+
+       .side-cta {
+           margin: 0.8rem 0.5rem 0;
+           padding: 0.7rem;
+           text-align: center;
+           font-weight: 800;
+           background: var(--card-hover);
+           border: 1px solid var(--line);
+           border-radius: 8px;
+           font-size: 0.9rem;
+       }
+
+
+       /* ---------- Main ---------- */
+       .content {
+           flex: 1;
+           min-width: 0;
+           max-width: 62rem;
+           width: 100%;
+           margin: 0 auto;
+           padding: 1.75rem 1.5rem 4rem;
+       }
+
+
+       .greeting {
+           font-size: 1.7rem;
+           font-weight: 900;
+           margin: 0 0 1.25rem;
+       }
+
+
+       /* Hero */
+       .hero {
+           position: relative;
+           overflow: hidden;
+           border-radius: 12px;
+           padding: 2.2rem 2rem 2rem;
+           background:
+               radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.14) 0 6%, transparent 7%),
+               linear-gradient(120deg, #1d3fb8 0%, var(--blue) 45%, #5b82ff 100%);
+           box-shadow: 0 10px 30px -12px rgba(51, 95, 255, 0.55);
+       }
+
+
+       .hero::after {
+           content: "";
+           position: absolute;
+           inset: auto -10% -45% auto;
+           width: 360px;
+           height: 360px;
+           background:
+               radial-gradient(circle, rgba(255, 255, 255, 0.22) 0 14%, transparent 15%) 0 0 / 38px 38px;
+           transform: rotate(18deg);
+           opacity: 0.55;
+           pointer-events: none;
+       }
+
+
+       .hero h1 {
+           position: relative;
+           z-index: 1;
+           margin: 0 0 0.4rem;
+           font-size: clamp(1.9rem, 5vw, 2.7rem);
+           font-weight: 900;
+           line-height: 1.08;
+           letter-spacing: -0.015em;
+       }
+
+
+       .hero p {
+           position: relative;
+           z-index: 1;
+           margin: 0 0 1.4rem;
+           font-weight: 600;
+           color: #e3eaff;
+           max-width: 32rem;
+       }
+
+
+       form { margin: 0; position: relative; z-index: 1; }
+
+
+       .search {
+           display: flex;
+           gap: 0.6rem;
+           max-width: 34rem;
+       }
+
+
+       .search input[type="text"] {
+           flex: 1;
+           min-width: 0;
+           font: 700 1rem var(--font);
+           color: var(--ink);
+           background: #191a1c;
+           border: 2px solid transparent;
+           border-radius: 8px;
+           padding: 0.85rem 1rem;
+           outline: 0;
+           transition: border-color 0.15s;
+       }
+       .search input[type="text"]::placeholder { color: var(--dim); }
+       .search input[type="text"]:focus { border-color: #fff; }
+
+
+       .search input[type="button"] {
+           appearance: none;
+           border: 0;
+           cursor: pointer;
+           font: 800 1rem var(--font);
+           color: #fff;
+           background: var(--green);
+           padding: 0 1.7rem;
+           border-radius: 8px;
+           transition: background 0.15s, transform 0.08s;
+       }
+       .search input[type="button"]:hover { background: var(--green-hover); }
+       .search input[type="button"]:active { transform: scale(0.97); }
+       .search input[type="button"]:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+
+       /* Section headers */
+       .section-head {
+           display: flex;
+           align-items: baseline;
+           justify-content: space-between;
+           margin: 2.2rem 0 0.9rem;
+       }
+       .section-head h2 { margin: 0; font-size: 1.3rem; font-weight: 800; }
+       .section-head span { color: var(--dim); font-weight: 700; font-size: 0.9rem; }
+
+
+       /* Game tiles */
+       .tiles {
+           display: grid;
+           grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+           gap: 0.9rem;
+       }
+
+
+       .tile {
+           appearance: none;
+           border: 0;
+           padding: 0;
+           text-align: left;
+           cursor: pointer;
+           background: transparent;
+           color: inherit;
+           font-family: var(--font);
+       }
+
+
+       .thumb {
+           aspect-ratio: 1 / 1;
+           border-radius: 10px;
+           display: grid;
+           place-items: center;
+           font-size: 3rem;
+           position: relative;
+           overflow: hidden;
+           transition: transform 0.15s, box-shadow 0.15s;
+       }
+       .thumb::after {
+           content: "";
+           position: absolute;
+           inset: 0;
+           background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0 14%, transparent 15%) 0 0 / 26px 26px;
+           opacity: 0.5;
+       }
+       .tile:hover .thumb { transform: translateY(-3px); box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.8); }
+       .tile:focus-visible .thumb { outline: 2px solid #fff; outline-offset: 2px; }
+
+
+       .t1 { background: linear-gradient(135deg, #7b2ff7, #3d1a9e); }
+       .t2 { background: linear-gradient(135deg, #3cc36a, #17693a); }
+       .t3 { background: linear-gradient(135deg, #f4a43a, #b3541b); }
+       .t4 { background: linear-gradient(135deg, #36b4f0, #1b5fa3); }
+       .t5 { background: linear-gradient(135deg, #f0547a, #902045); }
+       .t6 { background: linear-gradient(135deg, #8a94a6, #424a59); }
+
+
+       .tile-name { margin-top: 0.5rem; font-weight: 800; font-size: 0.95rem; }
+       .tile-meta { color: var(--dim); font-weight: 700; font-size: 0.8rem; margin-top: 0.1rem; }
+
+
+       /* Result: game page style */
+       #result { margin-top: 0.2rem; font-size: 1.05rem; font-weight: 600; line-height: 1.6; }
+
+
+       #result:empty {
+           padding: 2rem 1rem;
+           text-align: center;
+           color: var(--dim);
+           border: 2px dashed var(--line);
+           border-radius: 12px;
+       }
+       #result:empty::before { content: "Search for a game or pick a tile above to see who created it."; }
+
+
+       #result:not(:empty) {
+           padding: 1.5rem 1.6rem;
+           background: var(--card);
+           border: 1px solid var(--line);
+           border-radius: 12px;
+           position: relative;
+           animation: rise 0.3s ease-out;
+       }
+
+
+       #result:not(:empty)::before {
+           content: "Creator";
+           display: inline-block;
+           margin-bottom: 0.8rem;
+           padding: 0.2rem 0.65rem;
+           font-weight: 800;
+           font-size: 0.8rem;
+           color: #fff;
+           background: var(--blue);
+           border-radius: 6px;
+       }
+
+
+       #result h1, #result h2, #result h3 {
+           margin: 0 0 0.4rem;
+           font-size: 1.7rem;
+           font-weight: 900;
+           line-height: 1.15;
+           letter-spacing: -0.01em;
+           text-align: left;
+       }
+       #result p { margin: 0 0 0.7rem; color: #dcdddd; }
+       #result p:last-child { margin-bottom: 0; }
+       #result strong, #result b { color: var(--gold); font-weight: 800; }
+       #result a { color: #6f94ff; }
+
+
+       @keyframes rise {
+           from { opacity: 0; transform: translateY(8px); }
+           to   { opacity: 1; transform: none; }
+       }
+
+
+       /* Responsive */
+       @media (max-width: 960px) {
+           .sidebar { display: none; }
+           .nav-links { display: none; }
+       }
+       @media (max-width: 600px) {
+           .nav-search { display: none; }
+           .search { flex-direction: column; }
+           .search input[type="button"] { padding: 0.85rem; }
+           .hero { padding: 1.6rem 1.25rem; }
+           .content { padding: 1.25rem 1rem 3rem; }
+       }
+
+
+       @media (prefers-reduced-motion: reduce) {
+           * { animation: none !important; transition: none !important; }
+       }
+   </style>
+</head>
+<body>
+   <header class="topbar">
+       <a class="brand" href="#"><span class="brand-mark">GF</span>GameFinder</a>
+       <nav class="nav-links" aria-label="Main">
+           <a href="#" class="active">Discover</a>
+           <a href="#">Games</a>
+           <a href="#">Creators</a>
+           <a href="#">Charts</a>
+       </nav>
+       <div class="nav-search" aria-hidden="true">🔍 Search</div>
+       <div class="nav-right">
+           <div class="coins"><span class="coin"></span>1,250</div>
+           <div class="avatar" aria-hidden="true">🙂</div>
+       </div>
+   </header>
+
+
+   <div class="shell">
+       <aside class="sidebar" aria-label="Sidebar">
+           <div class="side-user"><div class="avatar" aria-hidden="true">🙂</div>Player1</div>
+           <a class="side-item active" href="#"><span class="ico">🏠</span>Home</a>
+           <a class="side-item" href="#"><span class="ico">👤</span>Profile</a>
+           <a class="side-item" href="#"><span class="ico">💬</span>Messages</a>
+           <a class="side-item" href="#"><span class="ico">👥</span>Friends</a>
+           <a class="side-item" href="#"><span class="ico">🧍</span>Avatar</a>
+           <a class="side-item" href="#"><span class="ico">🛒</span>Marketplace</a>
+           <div class="side-divider"></div>
+           <a class="side-item" href="#"><span class="ico">🏆</span>Top Creators</a>
+           <a class="side-item" href="#"><span class="ico">🎮</span>Game History</a>
+           <a class="side-item" href="#"><span class="ico">⭐</span>Favorites</a>
+           <div class="side-cta">Get Premium</div>
+       </aside>
+
+
+       <main class="content">
+           <h2 class="greeting">Welcome back, Player1</h2>
+
+
+           <section class="hero">
+               <h1>Who built your favorite game?</h1>
+               <p>Type a game's name and meet the creator behind it.</p>
+
+
+               <form onsubmit="return false;">
+                   <div class="search">
+                       <input type="text" id="dictionary" placeholder="Search a game, like Minecraft" autocomplete="off" aria-label="Game name">
+                       <input type="button" id="search-btn" py-click="game_details" value="Search">
+                   </div>
+               </form>
+           </section>
+
+
+           <div class="section-head">
+               <h2>Try these games</h2>
+               <span>Tap one to search</span>
+           </div>
+
+
+           <div class="tiles">
+               <button type="button" class="tile" data-game="Minecraft">
+                   <div class="thumb t2">⛏️</div>
+                   <div class="tile-name">Minecraft</div>
+                   <div class="tile-meta">Sandbox</div>
+               </button>
+               <button type="button" class="tile" data-game="Tetris">
+                   <div class="thumb t1">🧱</div>
+                   <div class="tile-name">Tetris</div>
+                   <div class="tile-meta">Puzzle</div>
+               </button>
+               <button type="button" class="tile" data-game="Zelda">
+                   <div class="thumb t3">🗡️</div>
+                   <div class="tile-name">Zelda</div>
+                   <div class="tile-meta">Adventure</div>
+               </button>
+               <button type="button" class="tile" data-game="Pac-Man">
+                   <div class="thumb t4">👾</div>
+                   <div class="tile-name">Pac-Man</div>
+                   <div class="tile-meta">Arcade</div>
+               </button>
+               <button type="button" class="tile" data-game="Among Us">
+                   <div class="thumb t5">🚀</div>
+                   <div class="tile-name">Among Us</div>
+                   <div class="tile-meta">Party</div>
+               </button>
+               <button type="button" class="tile" data-game="Fortnite">
+                   <div class="thumb t6">🪂</div>
+                   <div class="tile-name">Fortnite</div>
+                   <div class="tile-meta">Battle Royale</div>
+               </button>
+           </div>
+
+
+           <div class="section-head">
+               <h2>Creator details</h2>
+           </div>
+           <div id="result" aria-live="polite"></div>
+       </main>
+   </div>
+
+
+   <script>
+       var input = document.getElementById("dictionary");
+       var button = document.getElementById("search-btn");
+
+
+       // Enter key runs the search
+       input.addEventListener("keydown", function (e) {
+           if (e.key === "Enter") {
+               e.preventDefault();
+               button.click();
+           }
+       });
+
+
+       // Clicking a tile fills the box and searches
+       document.querySelectorAll(".tile").forEach(function (tile) {
+           tile.addEventListener("click", function () {
+               input.value = tile.dataset.game;
+               button.click();
+               document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "center" });
+           });
+       });
+   </script>
+
+
+   <py-script src="main.py"></py-script>
+</body>
+</html>
+
